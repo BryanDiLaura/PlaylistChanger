@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% block head %}
+    <link rel="stylesheet" href="static/spotify.css">
+    <title>Playlist Changer{% block title %}{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
+
+    <h1>Playlist Changer</h1>
+    <div></div>
+
+    {% block body %}
+    <a href={{ auth_url }}>Please log in by clicking here!</a>
+    <div></div>
+
+    <p>Please note: this will use the currently logged in Spotify user on the machine. If you
+        wish to use a different user, click the "not you" link on the bottom. 
+    </p>
+    {% endblock %}
+</body>
+</html>
