@@ -2,7 +2,6 @@
 ###An automatic Spotify playlist creator
 
 ## Synopsis
-
 Playlist Changer is an attempt to fill in functionality that I felt was missing in Spotify, specifically with smart playlists. There are already many tools for doing this hosted online, such as [this powerful tool](http://smarterplaylists.playlistmachinery.com/go.html). Unfortunately, none of them had the ability to create a **recently added** playlist, and didn't provide the granularity of control I was looking for. 
 
 Because of this, I decided to create a simple, locally hosted system, that would allow me to create these smart playlists as I wanted to. 
@@ -10,7 +9,6 @@ Because of this, I decided to create a simple, locally hosted system, that would
 *Note: this is still a work in progress! Please do not assume that things will remain remotely static with this codebase. If you like it as is, please make a fork. If you want to make improvements, please feel free to send in pull requests.*
 
 ## Getting Started
-
 ###Dependancies
 Playlist Changer depends on a couple of easily installable packages. These packages are: 
 - [spotipy](https://github.com/plamere/spotipy)

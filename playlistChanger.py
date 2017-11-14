@@ -1,13 +1,18 @@
+#! /usr/bin/env python
+
 #Bryan DiLaura
 
 from flask import Flask, request, render_template, redirect, url_for
 import spotipy
+from spotipy import oauth2
 from webbrowser import open_new_tab
 import random
 import datetime
 
+#create the flask application
 app = Flask(__name__)
 
+#get the spotify api keys from keys.py
 from keys import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
 
 #don't change these!
@@ -15,7 +20,7 @@ SPOTIPY_REDIRECT_URI = 'http://localhost:5000'
 SCOPE = 'user-library-read user-read-recently-played playlist-modify-public user-top-read'
 CACHE = '.spotipyoauthcache'
 
-sp_oauth = spotipy.oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY_REDIRECT_URI,scope=SCOPE,cache_path=CACHE )
+sp_oauth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, scope=SCOPE, cache_path=CACHE)
 
 #global spotify object forward instatiation (defined in index())
 sp = None
