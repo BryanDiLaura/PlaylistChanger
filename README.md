@@ -11,7 +11,6 @@ Because of this, I decided to create a simple, locally hosted system, that would
 ## Getting Started
 
 ### Dependancies
->>>>>>> aae29c627dcbf2629d31879aef345cf0a1919766
 Playlist Changer depends on a couple of easily installable packages. These packages are: 
 - [spotipy](https://github.com/plamere/spotipy)
 - [flask](http://flask.pocoo.org/)
