@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{% block title %}- Running{% endblock %}
+{% block head %}{{super()}}{% endblock %}
+
+
+
+{% block body %}
+<h2>Success!</h2>
+<br>
+<img src="/static/success.png" alt="Hurray!">
+<br><br><br>
+<a href="http://localhost:5000/runRecentlyAdded">Back to dashboard</a>
+
+{% endblock %}

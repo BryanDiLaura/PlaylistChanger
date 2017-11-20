@@ -8,6 +8,8 @@ from spotipy import oauth2
 from webbrowser import open_new_tab
 import random
 import datetime
+from threading import Thread
+from queue import Queue
 
 #create the flask application
 app = Flask(__name__)
@@ -25,6 +27,9 @@ sp_oauth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIP
 #global spotify object forward instatiation (defined in index())
 sp = None
 
+#global multiprocessing variables
+q = Queue()
+t = None
 
 @app.route('/',methods=["POST","GET"])
 def index():
@@ -53,7 +58,7 @@ def index():
     if access_token:
         print ("Access token available! Creating spotify object")
         sp = spotipy.Spotify(access_token)
-        return redirect(url_for("top_tracks"))
+        return redirect(url_for("runRecentlyAdded"))
 
     #need to prompt user to log in
     else:
@@ -67,12 +72,53 @@ def getSPOauthURI():
     return auth_url
 
 
+@app.route("/runRecentlyAdded")
+def runRecentlyAdded():
+    #this is primarily just a form page
+    return render_template("runRecentlyAdded.html")
+
+@app.route("/run", methods=['POST', 'GET'])
+def run():
+    global t, q
+
+    #has the thread already been created?
+    if t is not None:
+        #update the progress bar
+        if t.is_alive():
+            progress = q.get()
+            return render_template("running.html", progress=progress)
+
+        #everything is done, so success! Reset the thread and queue
+        else:
+            t.join()
+            t = None
+            q.queue.clear()
+            return redirect(url_for("success"))
+    
+    #no existing thread. Create worker thread...
+    else:
+        #get info out of form from runRecentlyAdded
+        playlistLength = int(request.form.get("playlistLength"))
+        maxSongs = int(request.form.get("maxSongs"))
+        shuffle = bool(request.form.get("shuffle"))
+        #create and start thread
+        t = Thread(target=createNewlyAddedPlaylist, args=(q, playlistLength, maxSongs, shuffle))
+        t.start()
+        return render_template("running.html", progress=1)
+
+        
+
+@app.route("/success")
+def success():
+    return render_template("success.html")
+
+
 @app.route("/top_tracks")
 def top_tracks():
     global sp
     user = sp.current_user()
     top = sp.current_user_top_tracks(limit=10)
-    createNewlyAddedPlaylist(maxSongsPerArtist=3)
+    #createNewlyAddedPlaylist(maxSongsPerArtist=3)
     return render_template("topSongs.html", songs=top['items'], user=user['id'])
 
 
@@ -159,8 +205,11 @@ def sample(n, r):
         yield n-pop-1
 
 
-def createNewlyAddedPlaylist(playlistLength=50, maxSongsPerArtist=4, shuffle=False):
+def createNewlyAddedPlaylist(queue, playlistLength=50, maxSongsPerArtist=4, shuffle=False):
     global sp
+
+    #populate the queue with a starting point
+    queue.put(1)
 
     #get current user's id
     result = sp.current_user()
@@ -194,6 +243,8 @@ def createNewlyAddedPlaylist(playlistLength=50, maxSongsPerArtist=4, shuffle=Fal
         songs += getSongList(playlistLength, callNo=i)
         songs = filterPlaylists(songs, artistDict, maxSongsPerArtist)
         i += 1
+        #update progress to the main process
+        queue.put(int((len(songs)/50)*100))
 
     #truncate list
     songs = songs[0:playlistLength]
@@ -209,6 +260,9 @@ def createNewlyAddedPlaylist(playlistLength=50, maxSongsPerArtist=4, shuffle=Fal
 
     #commit songs to the playlist
     sp.user_playlist_add_tracks(userID, newPlaylistID, songIDs)
+
+    #signal that we are done
+    queue.put(-1)
  
 
 if __name__ == "__main__":
