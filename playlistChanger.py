@@ -9,7 +9,7 @@ from webbrowser import open_new_tab
 import random
 import datetime
 from threading import Thread
-from queue import Queue
+from multiprocessing import Queue
 
 #create the flask application
 app = Flask(__name__)
