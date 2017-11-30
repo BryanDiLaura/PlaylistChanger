@@ -92,7 +92,8 @@ def run():
         else:
             t.join()
             t = None
-            q.queue.clear()
+            while not q.empty():
+                q.get()
             return redirect(url_for("success"))
     
     #no existing thread. Create worker thread...
