@@ -18,7 +18,7 @@ app = Flask(__name__)
 from keys import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
 
 #don't change these!
-SPOTIPY_REDIRECT_URI = 'http://localhost:5000'
+SPOTIPY_REDIRECT_URI = 'http://192.168.1.6:5000'
 SCOPE = 'user-library-read user-read-recently-played playlist-modify-public user-top-read'
 CACHE = '.spotipyoauthcache'
 
@@ -267,7 +267,8 @@ def createNewlyAddedPlaylist(queue, playlistLength=50, maxSongsPerArtist=4, shuf
 
 if __name__ == "__main__":
     #open up a new webpage tab for the localhost server (created next line)
-    open_new_tab("http://localhost:5000")
+    #open_new_tab("http://localhost:5000")
 
     #run the flask server
-    app.run()
+    #app.run()
+    app.run(host="192.168.1.6", debug=False)
