@@ -74,12 +74,19 @@ def getSPOauthURI():
 
 @app.route("/runRecentlyAdded")
 def runRecentlyAdded():
+    global sp
+
+    #check to make sure sp is good
+    if sp is None:
+        return redirect(url_for("index"))
+
     #this is primarily just a form page
     return render_template("runRecentlyAdded.html")
 
 @app.route("/run", methods=['POST', 'GET'])
 def run():
     global t, q
+
 
     #has the thread already been created?
     if t is not None:
@@ -214,8 +221,8 @@ def createNewlyAddedPlaylist(queue, playlistLength=50, maxSongsPerArtist=4, shuf
         result = sp.current_user()
         userID = result['id']
     except Exception as e:
-        #need to create sp object, so go to index to get it
-        redirect(url_for("index"))
+        #sp object not created so fail.
+        return redirect(url_for("failure"))
 
     #populate the queue with a starting point
     queue.put(1)
