@@ -216,13 +216,9 @@ def sample(n, r):
 def createNewlyAddedPlaylist(queue, playlistLength=50, maxSongsPerArtist=4, shuffle=False):
     global sp
 
-    try:
-        #get current user's id
-        result = sp.current_user()
-        userID = result['id']
-    except Exception as e:
-        #sp object not created so fail.
-        return redirect(url_for("failure"))
+    #get current user's id
+    result = sp.current_user()
+    userID = result['id']
 
     #populate the queue with a starting point
     queue.put(1)
