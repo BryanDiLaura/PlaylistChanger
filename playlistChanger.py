@@ -209,12 +209,16 @@ def sample(n, r):
 def createNewlyAddedPlaylist(queue, playlistLength=50, maxSongsPerArtist=4, shuffle=False):
     global sp
 
+    try:
+        #get current user's id
+        result = sp.current_user()
+        userID = result['id']
+    except Exception as e:
+        #need to create sp object, so go to index to get it
+        redirect(url_for("index"))
+
     #populate the queue with a starting point
     queue.put(1)
-
-    #get current user's id
-    result = sp.current_user()
-    userID = result['id']
     
     #get the current user's playlists (assumes less than 50)
     result = sp.current_user_playlists()
